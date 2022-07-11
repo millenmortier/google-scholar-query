@@ -41,7 +41,9 @@ function query(query) {
                 const results = yield (0, scholarly_1.search)(query, startOffset);
                 startOffset += pageSize;
                 foundResults = results.length;
-                emitter.emit('data', results);
+                if (foundResults > 0) {
+                    emitter.emit('data', results);
+                }
             }
         }
         catch (err) {
@@ -53,6 +55,7 @@ function query(query) {
                 emitter.emit('error', err);
             }
         }
+        emitter.emit('end');
     }))();
     return emitter;
 }

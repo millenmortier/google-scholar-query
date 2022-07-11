@@ -24,7 +24,7 @@ exports.TooManyRequestsError = TooManyRequestsError;
  * We should be really tentative with sending requests to Google, since they
  * rate limit very heavily, so we wait 2seconds in between each call
  */
-function query(query, limit) {
+function query(query, limit = Infinity) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         let allResults = [];
@@ -33,7 +33,7 @@ function query(query, limit) {
         let foundResults;
         let callCount = 0;
         try {
-            while (foundResults !== 0 || foundResults < limit) {
+            while (foundResults !== 0 && allResults.length < limit) {
                 if (callCount > 0) {
                     yield (0, wait_1.default)(2000);
                 }
@@ -42,7 +42,7 @@ function query(query, limit) {
                 startOffset += pageSize;
                 foundResults = results.length;
             }
-            if (foundResults > limit) {
+            if (allResults.length > limit) {
                 allResults = allResults.slice(0, limit);
             }
         }
